@@ -28,3 +28,12 @@ def main():
     # prints the output
 
     #print("\n\nTime for loop: {} seconds\n".format(run_time))
+
+   
+
+    fp.write(str(run_time.time()*1000.0))
+    fp.close
+
+
+if __name__ == "__main__":
+    main()
