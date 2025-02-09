@@ -25,9 +25,10 @@ def main():
     end_time = datetime.now()
 
     # gets the total time
-    run_time = end_time - start_time
+    #run_time = end_time - start_time
     # prints the output
-    ms = end_time.total_seconds() * 1000
+    ms = 0
+    #ms = end_time.total_seconds() * 1000
     #print("\n\nTime for loop: {} seconds\n".format(run_time))
 
    
