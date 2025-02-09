@@ -1,5 +1,5 @@
 import sys
-import time
+import time; ms = time.time()*1000.0 
 
 fp = open("data/time_py.txt", 'a')
 
