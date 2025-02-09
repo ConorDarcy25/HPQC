@@ -28,7 +28,7 @@ def main():
     run_time = end_time - start_time
     # prints the output
   #  ms = run_time.total_seconds() * 1000
-    ms = run_time.strftime
+    ms = run_time.strftime(%S)
    
 
     fp.write("{ms}")
