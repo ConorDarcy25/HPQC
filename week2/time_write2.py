@@ -33,7 +33,7 @@ def main():
 
    
 
-    fp.write(str.({ms}))
+    fp.write(str.{ms})
     fp.close
 
 
