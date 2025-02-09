@@ -2,7 +2,7 @@ import sys
 import time
 from datetime import datetime
 
-fp = open("data/time_py.txt", 'a')
+fp = open("data/time_py.txt", 'o')
 
 def main(): 
     output = 0
