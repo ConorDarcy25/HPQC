@@ -15,14 +15,14 @@ def main():
         raise Exception("Incorrect arguments.\nUsage: python time_print.py [NUM]\ne.g.\npython time_print.py 23")
 
     # gets the start time for the loop
-    start_time = datetime.strptime()
+    start_time = datetime.now()
     # iterates over all numbers up to the input
     for i in range(in_arg):
         # prints the index
        # fp.write(str(print("{}, ".format(i), end="")))
         fp.write(str(i))
     # gets the end time for the loop
-    end_time = datetime.strptime()
+    end_time = datetime.now()
 
     # gets the total time
     run_time = end_time - start_time
