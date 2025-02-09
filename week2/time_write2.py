@@ -22,6 +22,7 @@ def main():
        # fp.write(str(print("{}, ".format(i), end="")))
         fp.write(str(i))
     # gets the end time for the loop
+    fp.write("\n")
     end_time = datetime.now()
 
     # gets the total time
