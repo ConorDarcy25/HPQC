@@ -28,7 +28,7 @@ def main():
     run_time = end_time - start_time
     # prints the output
   #  ms = run_time.total_seconds() * 1000
-    print("Time taken:".format(end_time-start_time))
+    print("Time taken:{}".format(end_time-start_time))
   #  ms = run_time.strftime("%S")
    
 
