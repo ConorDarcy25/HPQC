@@ -1,5 +1,6 @@
 import sys
 import time
+from datetime import datetime
 
 fp = open("data/time_py.txt", 'a')
 
@@ -14,24 +15,24 @@ def main():
         raise Exception("Incorrect arguments.\nUsage: python time_print.py [NUM]\ne.g.\npython time_print.py 23")
 
     # gets the start time for the loop
-    start_time = time.time()
+    start_time = datetime.strptime()
     # iterates over all numbers up to the input
     for i in range(in_arg):
         # prints the index
        # fp.write(str(print("{}, ".format(i), end="")))
         fp.write(str(i))
     # gets the end time for the loop
-    end_time = time.time()
+    end_time = datetime.strptime()
 
     # gets the total time
     run_time = end_time - start_time
     # prints the output
-
+    ms = delta.total_seconds() * 1000
     #print("\n\nTime for loop: {} seconds\n".format(run_time))
 
    
 
-    fp.write(str(run_time.time()*1000.0))
+    fp.write({ms})
     fp.close
 
 
