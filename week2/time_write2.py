@@ -32,7 +32,7 @@ def main():
   #  ms = run_time.strftime("%S")
    
 
-    fp.write("{ms}")
+    fp.write("Time taken:{}".format(end_time-start_time))
     fp.close
 
 
