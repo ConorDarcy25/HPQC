@@ -18,8 +18,8 @@ def main():
     # iterates over all numbers up to the input
     for i in range(in_arg):
         # prints the index
-        fp.write(str(print("{}, ".format(i), end="")))
-        #fp.write(str(i))
+       # fp.write(str(print("{}, ".format(i), end="")))
+        fp.write(str(i))
     # gets the end time for the loop
     end_time = time.time()
 
