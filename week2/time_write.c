@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 	{
 		// prints the index
 		printf("%d, ", i);
+		fprintf(fptr,"%d",i);
 	}
 	// gets the time after the loop
         timespec_get(&end_time, TIME_UTC);
