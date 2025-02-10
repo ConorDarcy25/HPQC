@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	bytered = (char)fgetc(fptr); 
 	printf("%c", bytered);
 	}
-	while(redcar != EOF);
+	while(bytered != EOF);
 	//fprintf(fptr,"\n");
 	// gets the time after the loop
         timespec_get(&end_time, TIME_UTC);
