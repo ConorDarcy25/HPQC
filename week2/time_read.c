@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 		//fprintf(fptr,"%d",i);
 	//}
 	char bytered;
+	printf("reading file \n");
 	do
 	{
 	bytered = (char)fgetc(fptr); 
