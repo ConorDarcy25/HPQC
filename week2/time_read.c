@@ -8,6 +8,8 @@ struct timespec calculate_runtime(struct timespec start_time, struct timespec en
 int main(int argc, char **argv) 
 {
 	// creates and initialises the variables
+	FILE *fptr;
+	fptr = fopen("data/time_write.txt","w");
 	int i, input;
 	i = input = 0;
 	struct timespec start_time, end_time, time_diff;
@@ -34,7 +36,9 @@ int main(int argc, char **argv)
 	{
 		// prints the index
 		printf("%d, ", i);
+		fprintf(fptr,"%d",i);
 	}
+	fprintf(fptr,"\n");
 	// gets the time after the loop
         timespec_get(&end_time, TIME_UTC);
 
@@ -45,7 +49,8 @@ int main(int argc, char **argv)
 
 	// outputs the runtime
 	printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
-
+	fprintf(fptr,"%f",runtime);
+	fclose(fptr);
 	return 0;
 }
 
@@ -93,4 +98,3 @@ struct timespec calculate_runtime(struct timespec start_time, struct timespec en
 
 	return time_diff;
 }
-
