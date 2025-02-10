@@ -16,19 +16,6 @@ int main(int argc, char **argv)
 	struct timespec start_time, end_time, time_diff;
 	double runtime = 0.0;
 
-	// checks if there are the right number of arguments
-	//if (argc == 2)
-	//{
-		// converts the first argument to an integer
-	//	input = atoi(argv[1]);
-	//}
-	//else //(argc != 2)
-	//{
-		// raises an error
-		//fprintf(stderr, "Incorrect arguments.  Usage: time_print [NUM]\ne.g. \n time_print 3\n");
-		// and crashes out
-	//	exit(-1);
-	//}
 	
 	// gets the time before the loop
 	timespec_get(&start_time, TIME_UTC);
