@@ -4,7 +4,7 @@ import time
 
 start_time = time.time()
 
-file = open("data/data.txt", "r")
+file = open("data/time_py.txt", "r")
 
 #def main(): 
 #    output = 0
