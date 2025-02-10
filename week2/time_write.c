@@ -8,6 +8,8 @@ struct timespec calculate_runtime(struct timespec start_time, struct timespec en
 int main(int argc, char **argv) 
 {
 	// creates and initialises the variables
+	FILE *fptr;
+	ftpr = fopen("data/time_write.c","w");
 	int i, input;
 	i = input = 0;
 	struct timespec start_time, end_time, time_diff;
@@ -92,4 +94,5 @@ struct timespec calculate_runtime(struct timespec start_time, struct timespec en
 	time_diff.tv_nsec = nanoseconds;
 
 	return time_diff;
+	fclose(fptr);
 }
