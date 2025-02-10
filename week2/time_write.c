@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 	// outputs the runtime
 	printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
 
+	fclose(fptr);
 	return 0;
 }
 
@@ -94,5 +95,4 @@ struct timespec calculate_runtime(struct timespec start_time, struct timespec en
 	time_diff.tv_nsec = nanoseconds;
 
 	return time_diff;
-	fclose(fptr);
 }
