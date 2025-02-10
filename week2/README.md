@@ -10,6 +10,8 @@ time_read.py: This is a simple python file which takes the output text file from
 time_read.c: This C file works the same as the python equivalent also, where it reads a file as input and times how long for it to be read.
 gcc HPQC/week2/time_read.c -o bin/time_read
 time ./bin/time_read
+
+
 Conclusions:
 hello_world.py/hello_world.c: Both of these programs ran extremely quickly, but when comparing the two it’s clear that the C code is much more efficient as the Python code had a real runtime of 0.018s and the C code had a real runtime of 0.005s
 repeat_adder.py/repeat_adder.c: When taking small inputs, in this case 4 and 6, the C code ran much quicker than the python code, with real run times of 0.004s and 0.024s respectively. When using slightly larger values such as 1000 and 2000, the same result was observed. However, when using two extremely large values, both being 123456789, the python code took a significant amount of time to give the correct answer, taking 11.424s, while the C code took 0.347s to output an incorrect value of -1757895751. The C code was run twice to ensure that it was not a human/input error, with the answer ultimately being the same showing that the python code is more efficient in this regard.
