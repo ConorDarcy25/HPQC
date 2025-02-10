@@ -6,10 +6,11 @@ double to_second_float(struct timespec in_time);
 struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);
 
 int main(int argc, char **argv) 
+
 {
 	// creates and initialises the variables
 	FILE *fptr;
-	fptr = fopen("data/time_write.txt","w");
+	fptr = fopen("data/time_write.txt","r");
 	int i, input;
 	i = input = 0;
 	struct timespec start_time, end_time, time_diff;
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
 	else //(argc != 2)
 	{
 		// raises an error
-		fprintf(stderr, "Incorrect arguments.  Usage: time_print [NUM]\ne.g. \n time_print 3\n");
+		//fprintf(stderr, "Incorrect arguments.  Usage: time_print [NUM]\ne.g. \n time_print 3\n");
 		// and crashes out
 		exit(-1);
 	}
@@ -32,13 +33,20 @@ int main(int argc, char **argv)
 	// gets the time before the loop
 	timespec_get(&start_time, TIME_UTC);
 	// iterates over all numbers up the input
-	for (i = 0; i < input; i++)
-	{
+	//for (i = 0; i < input; i++)
+	//{
 		// prints the index
-		printf("%d, ", i);
-		fprintf(fptr,"%d",i);
+		//printf("%d, ", i);
+		//fprintf(fptr,"%d",i);
+	//}
+	char bytered;
+	do
+	{
+	bytered = (char)fgetc(fptr); 
+	printf("%c", bytered);
 	}
-	fprintf(fptr,"\n");
+	while(redcar != EOF);
+	//fprintf(fptr,"\n");
 	// gets the time after the loop
         timespec_get(&end_time, TIME_UTC);
 
@@ -49,7 +57,7 @@ int main(int argc, char **argv)
 
 	// outputs the runtime
 	printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
-	fprintf(fptr,"%f",runtime);
+	//fprintf(fptr,"%f",runtime);
 	fclose(fptr);
 	return 0;
 }
