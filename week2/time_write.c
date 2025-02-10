@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 		printf("%d, ", i);
 		fprintf(fptr,"%d",i);
 	}
+	fprintf(fptr,"\n");
 	// gets the time after the loop
         timespec_get(&end_time, TIME_UTC);
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
 
 	// outputs the runtime
 	printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
-
+	fprintf(fptr,"%f",runtime);
 	fclose(fptr);
 	return 0;
 }
