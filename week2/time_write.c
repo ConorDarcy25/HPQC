@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
 	// creates and initialises the variables
 	FILE *fptr;
-	fptr = fopen("data/time_write.c","w");
+	fptr = fopen("data/time_write.txt","w");
 	int i, input;
 	i = input = 0;
 	struct timespec start_time, end_time, time_diff;
