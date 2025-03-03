@@ -1,3 +1,11 @@
+Benchmarking:
+
+When running the file for low values (for example, 4 and 10) the real times are similar. These times were approximately 0.5s with the higher input value even having a slightly shorter real run time (0.417s vs 0.552s). Each real time was larger than their respective user and system times. For lower values, the times were similar to that of the serial code. 
+
+When inputting a very large value, such as 100, the code would not run as there was not enough slots available in the code to compute such a large input value
+
+
+
 proof.c documentation:
 
 main(): Starts the MPI environment, gets the ID, gets the total number of processes.
