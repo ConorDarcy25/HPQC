@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
     local_vector = malloc(local_size * sizeof(int));
     MPI_Scatter(vector, local_size, MPI_INT, local_vector, local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-/*    double start_time, end_time;
-//    if (time_flag) {
+  double start_time, end_time;
+    if (time_flag) {
         start_time = MPI_Wtime();
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
     MPI_Finalize();
     return 0;
-} */
+} 
 
 int sum_vector(int* vector, int size) {
     int sum = 0;
