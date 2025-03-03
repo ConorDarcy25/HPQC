@@ -41,7 +41,7 @@ The sum of vectors is then calculated and printed
 
 Non-trivialisation:
 
-The <time.h> library has been added to the code which allows one to measure the runtime of the procedure. This is done by starting a timer before the vector addition and then finishing it once it's completed. The initailisation function was modified to give a vector value of i + 2, or num_arg + 1.
+The initailisation function was modified to give a vector value of i + 2, or num_arg + 1.
 
 Parallelisation: 
 
