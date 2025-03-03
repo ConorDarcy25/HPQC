@@ -37,3 +37,11 @@ The check_args function checks if the user gives only one argument, and converts
 The initialise function initialises all elements in a vector to the given value.
 
 The sum of vectors is then calculated and printed
+
+
+Non-trivialisation:
+
+The <time.h> library has been added to the code which allows one to measure the runtime of the procedure. This is done by starting a timer before the vector addition and then finishing it once it's completed. The initailisation function was modified to give a vector value of i + 2, or num_arg + 1.
+
+Parallelisation: 
+
