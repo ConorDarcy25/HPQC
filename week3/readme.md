@@ -45,3 +45,4 @@ The <time.h> library has been added to the code which allows one to measure the 
 
 Parallelisation: 
 
+While the serial code 
