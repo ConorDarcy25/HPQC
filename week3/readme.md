@@ -27,3 +27,13 @@ check_task(): This code states that root process calls root_task() while any oth
 Part 3:
 
 Understanding of the serial code:
+
+At the start of the code, functions are delcared that will be used in main()
+
+In the main() function, check_args checks the program to make sure only ine argument is given. If this is not the case, an errir message is returned. Malloc is used to dynamically alocate memory for the vector. The vector is then initialised to set each element of the vector to 0. The vector is then freed
+
+The check_args function checks if the user gives only one argument, and converts the integer value using the "atoi" function
+
+The initialise function initialises all elements in a vector to the given value.
+
+The sum of vectors is then calculated and printed
