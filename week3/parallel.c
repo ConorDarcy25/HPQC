@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <mpi.h>
 
-// Functions
 int sum_vector(int* vector, int size);
 void init_vector(int* vector, int size);
 
@@ -33,7 +32,7 @@ int main(int argc, char **argv) {
         }
         vector = malloc(total_size * sizeof(int));
         if (vector == NULL) {
-            printf("Memory allocation failed\n");
+            printf("Memory fail\n");
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
         init_vector(vector, total_size);
@@ -45,7 +44,7 @@ int main(int argc, char **argv) {
     local_vector = malloc(local_size * sizeof(int));
     MPI_Scatter(vector, local_size, MPI_INT, local_vector, local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    double start_time, end_time;
+    /*double start_time, end_time;
     if (time_flag) {
         start_time = MPI_Wtime();
     }
@@ -55,13 +54,13 @@ int main(int argc, char **argv) {
 
     if (time_flag) {
         end_time = MPI_Wtime();
-    }
+    }*/
 
     if (rank == 0) {
         printf("Total Sum: %d\n", total_sum);
-        if (time_flag) {
+        /*if (time_flag) {
             printf("Execution Time: %lf seconds\n", end_time - start_time);
-        }
+        }*/
         free(vector);
     }
     free(local_vector);
