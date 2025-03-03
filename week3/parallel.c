@@ -1,119 +1,74 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <mpi.h>
 
-double to_second_float(struct timespec in_time);
-struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);
-int check_args(int argc, char **argv);
-void initialise_vector(int vector[], int size, int initial);
-void print_vector(int vector[], int size);
-int parallel_sum_vector(int vector[], int size, int num_threads);
-void non_trivial_vector(int vector[], int size);
+// Functions
+int sum_vector(int* vector, int size);
+void init_vector(int* vector, int size);
+double to_seconds(struct timespec t);
 
-int main(int argc, char **argv)
-{
-    int num_arg = check_args(argc, argv);
-    struct timespec start_time, end_time, time_diff;
-    double runtime = 0.0;
-    
-    timespec_get(&start_time, TIME_UTC);
+int main(int argc, char **argv) {
+    int rank, num_procs, total_size, local_size;
+    int *vector = NULL, *local_vector = NULL;
+    int local_sum = 0, total_sum = 0;
+    struct timespec start_time, end_time;
+    double runtime;
 
-    int* my_vector = malloc(num_arg * sizeof(int));
-    if (my_vector == NULL) {
-        printf("Memory allocation failed!\n");
-        return 1;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    if (rank == 0) {
+        if (argc < 2) {
+            printf("Usage: %s <size>\n", argv[0]);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+        total_size = atoi(argv[1]);
+        vector = malloc(total_size * sizeof(int));
+        if (vector == NULL) {
+            printf("Memory allocation failed\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+        init_vector(vector, total_size);
     }
 
-    initialise_vector(my_vector, num_arg, 0);
-    non_trivial_vector(my_vector, num_arg);
+    MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    local_size = total_size / num_procs;
+    local_vector = malloc(local_size * sizeof(int));
+    MPI_Scatter(vector, local_size, MPI_INT, local_vector, local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    int num_threads = 4; 
-    int my_sum = parallel_sum_vector(my_vector, num_arg, num_threads);
-
-    
+    timespec_get(&start_time, TIME_UTC);
+    local_sum = sum_vector(local_vector, local_size);
+    MPI_Reduce(&local_sum, &total_sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     timespec_get(&end_time, TIME_UTC);
 
-    time_diff = calculate_runtime(start_time, end_time);
-    runtime = to_second_float(time_diff);
+    if (rank == 0) {
+        runtime = to_seconds(end_time) - to_seconds(start_time);
+        printf("Total Sum: %d\n", total_sum);
+        printf("Execution Time: %lf seconds\n", runtime);
+        free(vector);
+    }
+    free(local_vector);
 
-    printf("Sum of vectors: %d\n", my_sum);
-    printf("\n\nRuntime: %lf seconds.\n\n", runtime);
-
-    free(my_vector);
+    MPI_Finalize();
     return 0;
 }
 
-int parallel_sum_vector(int vector[], int size, int num_threads)
-{
-    int total_sum = 0;
-    int chunk_size = size / num_threads;
-    int remainder = size % num_threads;
-    int* partial_sums = malloc(num_threads * sizeof(int));
-
-    if (partial_sums == NULL) {
-        printf("Memory failed!\n");
-        return 0;
-    }
-
-    for (int i = 0; i < num_threads; i++) {
-        partial_sums[i] = 0;
-    }
-
-    for (int t = 0; t < num_threads; t++) {
-        int start = t * chunk_size;
-        int end = start + chunk_size;
-        if (t == num_threads - 1) {
-            end += remainder;
-        }
-        for (int i = start; i < end; i++) {
-            partial_sums[t] += vector[i];
-        }
-    }
-
-    for (int i = 0; i < num_threads; i++) {
-        total_sum += partial_sums[i];
-    }
-
-    free(partial_sums);
-    return total_sum;
-}
-
-void initialise_vector(int vector[], int size, int initial)
-{
+int sum_vector(int* vector, int size) {
+    int sum = 0;
     for (int i = 0; i < size; i++) {
-        vector[i] = initial;
+        sum += vector[i];
     }
+    return sum;
 }
 
-void non_trivial_vector(int vector[], int size)
-{
+void init_vector(int* vector, int size) {
     for (int i = 0; i < size; i++) {
-        vector[i] = i + 2;
+        vector[i] = i + 1;
     }
 }
 
-double to_second_float(struct timespec in_time)
-{
-    return in_time.tv_sec + in_time.tv_nsec / 1e9;
-}
-
-struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time)
-{
-    struct timespec time_diff;
-    time_diff.tv_sec = end_time.tv_sec - start_time.tv_sec;
-    time_diff.tv_nsec = end_time.tv_nsec - start_time.tv_nsec;
-    if (time_diff.tv_nsec < 0) {
-        time_diff.tv_sec -= 1;
-        time_diff.tv_nsec += 1e9;
-    }
-    return time_diff;
-}
-
-int check_args(int argc, char **argv)
-{
-    if (argc == 2) {
-        return atoi(argv[1]);
-    }
-    printf("Please provide and input value\n");
-    exit(-1);
+double to_seconds(struct timespec t) {
+    return t.tv_sec + (t.tv_nsec / 1e9);
 }
