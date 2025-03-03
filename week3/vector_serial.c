@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-
-double to_second_float(struct timespec in_time);
-struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);
+/*double to_second_float(struct timespec in_time);
+struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);*/
 int check_args(int argc, char **argv);
 void initialise_vector(int vector[], int size, int initial);
 void print_vector(int vector[], int size);
