@@ -115,6 +115,5 @@ int check_args(int argc, char **argv)
         return atoi(argv[1]);
     }
     printf("Please provide and input value\n");
-    printf("Correct use: %s [NUMBER]\n", argv[0]);
     exit(-1);
 }
