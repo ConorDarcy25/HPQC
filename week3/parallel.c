@@ -3,7 +3,7 @@
 #include <time.h>
 #include <mpi.h>
 
-// Functions
+
 int sum_vector(int* vector, int size);
 void init_vector(int* vector, int size);
 double to_seconds(struct timespec t);
