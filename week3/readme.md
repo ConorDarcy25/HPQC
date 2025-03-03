@@ -25,3 +25,5 @@ check_task(): This code states that root process calls root_task() while any oth
 
 
 Part 3:
+
+Understanding of the serial code:
