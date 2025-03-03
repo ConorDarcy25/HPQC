@@ -45,4 +45,8 @@ The <time.h> library has been added to the code which allows one to measure the 
 
 Parallelisation: 
 
-While the serial code 
+While the serial code summed up all vectors in a single loop, the parallel code uses MPI to work around this. The code is initialised and ranks are acquired for each process, as well as the total number of processes
+
+The main process initialises the vector and sends parts to each process, with each process summing up its part. All these smaller sums are collected and added together to give a final total sum
+
+It was found that the parallel code actually takes longer in real time than the serial code for what appears to be every input. This is believed to be a result of the parallel code taking time to split up the data and return it. Since the program is so trivial, it actually makes more sense to use a serial implementation, but it would make more sense to use parallel computing for more complex tasks
