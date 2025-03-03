@@ -32,9 +32,9 @@ int main(int argc, char **argv)
 
 
 
-	/*int my_sum = sum_vector(my_vector, num_arg);
+	int my_sum = sum_vector(my_vector, num_arg);
 
-        timespec_get(&end_time, TIME_UTC);
+        /*timespec_get(&end_time, TIME_UTC);
 
 	
 	time_diff = calculate_runtime(start_time, end_time);
