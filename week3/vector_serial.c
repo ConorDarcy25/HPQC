@@ -1,80 +1,170 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
-#include <string.h>
+#include <time.h>
 
-// Functions
-int sum_vector(int* vector, int size);
-void init_vector(int* vector, int size);
 
-int main(int argc, char **argv) {
-    int rank, num_procs, total_size, local_size;
-    int *vector = NULL, *local_vector = NULL;
-    int local_sum = 0, total_sum = 0;
-    int time_flag = 0;
+double to_second_float(struct timespec in_time);
+struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);
+int check_args(int argc, char **argv);
+void initialise_vector(int vector[], int size, int initial);
+void print_vector(int vector[], int size);
+int sum_vector(int vector[], int size);
+void non_trivial_vector(int vector[], int size);
 
-    MPI_Init(&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    if (rank == 0) {
-        if (argc < 2) {
-            printf("Usage: %s <size> [time]\n", argv[0]);
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
-        total_size = atoi(argv[1]);
-        if (argc > 2 && strcmp(argv[2], "time") == 0) {
-            time_flag = 1;
-        }
-        vector = malloc(total_size * sizeof(int));
-        if (vector == NULL) {
-            printf("Memory allocation failed\n");
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
-        init_vector(vector, total_size);
-    }
+int main(int argc, char **argv)
+{
+	
+	int num_arg = check_args(argc, argv);
+	
+	struct timespec start_time, end_time, time_diff;
+	double runtime = 0.0;
+	
+	timespec_get(&start_time, TIME_UTC);
 
-    MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&time_flag, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    local_size = total_size / num_procs;
-    local_vector = malloc(local_size * sizeof(int));
-    MPI_Scatter(vector, local_size, MPI_INT, local_vector, local_size, MPI_INT, 0, MPI_COMM_WORLD);
+	int* my_vector = malloc (num_arg * sizeof(int));
+	
+	initialise_vector(my_vector, num_arg, 0);
 
-  double start_time, end_time;
-    if (time_flag) {
-        start_time = MPI_Wtime();
-    }
 
-    local_sum = sum_vector(local_vector, local_size);
-    MPI_Reduce(&local_sum, &total_sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+	
+	non_trivial_vector(my_vector, num_arg);
 
-    if (time_flag) {
-        end_time = MPI_Wtime();
-    }
 
-    if (rank == 0) {
-        printf("Total Sum: %d\n", total_sum);
-        if (time_flag) {
-            printf("Execution Time: %lf seconds\n", end_time - start_time);
-        }
-        free(vector);
-    }
-    free(local_vector);
 
-    MPI_Finalize();
-    return 0;
-} 
+	int my_sum = sum_vector(my_vector, num_arg);
 
-int sum_vector(int* vector, int size) {
-    int sum = 0;
-    for (int i = 0; i < size; i++) {
-        sum += vector[i];
-    }
-    return sum;
+        timespec_get(&end_time, TIME_UTC);
+
+	
+	time_diff = calculate_runtime(start_time, end_time);
+	runtime = to_second_float(time_diff);
+
+	
+	printf("Sum: %d\n", my_sum);
+
+	
+	printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
+
+
+	
+	free(my_vector);
+
+	return 0;
 }
 
-void init_vector(int* vector, int size) {
-    for (int i = 0; i < size; i++) {
-        vector[i] = i + 1;
-    }
+
+int sum_vector(int vector[], int size)
+{
+	int sum = 0;
+
+	
+	for (int i = 0; i < size; i++)
+	{
+		sum += vector[i];
+	}
+
+	
+	return sum;
+}
+
+
+void initialise_vector(int vector[], int size, int initial)
+{
+
+	for (int i = 0; i < size; i++)
+	{
+		
+		vector[i] = initial;
+	}
+}
+
+
+void non_trivial_vector(int vector[], int size)
+{
+
+	for (int i = 0; i < size; i++)
+	{
+		
+		vector[i] = i+2;
+	}
+}
+
+
+
+void print_vector(int vector[], int size)
+{
+	
+	for (int i = 0; i < size; i++)
+	{
+		
+		printf("%d\n", vector[i]);
+	}
+}
+
+
+int check_args(int argc, char **argv)
+{
+	
+	int num_arg = 0;
+
+	
+	if (argc == 2) 
+	{
+		
+		num_arg = atoi(argv[1]);
+	}
+	else 
+	{
+	
+		fprintf(stderr, "ERROR: You did not provide a numerical argument!\n");
+		fprintf(stderr, "Correct use: %s [NUMBER]\n", argv[0]);
+
+		
+		exit (-1);
+	}
+	return num_arg;
+}
+double to_second_float(struct timespec in_time)
+{
+
+	float out_time = 0.0;
+	long int seconds, nanoseconds;
+	seconds = nanoseconds = 0;
+
+	
+	seconds = in_time.tv_sec;
+	nanoseconds = in_time.tv_nsec;
+
+	
+	out_time = seconds + nanoseconds/1e9;
+
+	
+	return out_time;
+}
+
+struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time)
+{
+	
+	struct timespec time_diff;
+	long int seconds, nanoseconds;                                                                                                       seconds = nanoseconds = 0;
+	double runtime = 0.0;
+
+	
+	seconds = end_time.tv_sec - start_time.tv_sec;
+	nanoseconds = end_time.tv_nsec - start_time.tv_nsec;
+
+	
+	if (nanoseconds < 0)
+	{
+		
+		seconds = seconds - 1;
+		nanoseconds = ((long int) 1e9) - nanoseconds;
+	}
+
+	
+	time_diff.tv_sec = seconds;
+	time_diff.tv_nsec = nanoseconds;
+
+	return time_diff;
 }
