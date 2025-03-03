@@ -109,27 +109,3 @@ int check_args(int argc, char **argv)
 	}
 	return num_arg;
 }
-
-	
-	struct timespec time_diff;
-	long int seconds, nanoseconds;                                                                                                       seconds = nanoseconds = 0;
-	double runtime = 0.0;
-
-	
-	seconds = end_time.tv_sec - start_time.tv_sec;
-	nanoseconds = end_time.tv_nsec - start_time.tv_nsec;
-
-	
-	if (nanoseconds < 0)
-	{
-		
-		seconds = seconds - 1;
-		nanoseconds = ((long int) 1e9) - nanoseconds;
-	}
-
-	
-	time_diff.tv_sec = seconds;
-	time_diff.tv_nsec = nanoseconds;
-
-	return time_diff;
-}*/
