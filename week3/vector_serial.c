@@ -16,11 +16,6 @@ int main(int argc, char **argv)
 {
 	
 	int num_arg = check_args(argc, argv);
-	
-	/*struct timespec start_time, end_time, time_diff;
-	double runtime = 0.0;
-	
-	timespec_get(&start_time, TIME_UTC);*/
 
 	int* my_vector = malloc (num_arg * sizeof(int));
 	
@@ -34,19 +29,8 @@ int main(int argc, char **argv)
 
 	int my_sum = sum_vector(my_vector, num_arg);
 
-        /*timespec_get(&end_time, TIME_UTC);
 
-	
-	time_diff = calculate_runtime(start_time, end_time);
-	runtime = to_second_float(time_diff);*/
-
-	
 	printf("Sum: %d\n", my_sum);
-
-	
-	//printf("\n\nRuntime for core loop: %lf seconds.\n\n", runtime);
-
-
 	
 	free(my_vector);
 
@@ -125,26 +109,7 @@ int check_args(int argc, char **argv)
 	}
 	return num_arg;
 }
-/*double to_second_float(struct timespec in_time)
-{
 
-	float out_time = 0.0;
-	long int seconds, nanoseconds;
-	seconds = nanoseconds = 0;
-
-	
-	seconds = in_time.tv_sec;
-	nanoseconds = in_time.tv_nsec;
-
-	
-	out_time = seconds + nanoseconds/1e9;
-
-	
-	return out_time;
-}
-
-/*struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time)
-{
 	
 	struct timespec time_diff;
 	long int seconds, nanoseconds;                                                                                                       seconds = nanoseconds = 0;
