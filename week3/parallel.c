@@ -47,12 +47,12 @@ int main(int argc, char **argv) {
     /*double start_time, end_time;
     if (time_flag) {
         start_time = MPI_Wtime();
-    }
+    }*/
 
     local_sum = sum_vector(local_vector, local_size);
     MPI_Reduce(&local_sum, &total_sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    if (time_flag) {
+/*if (time_flag) {
         end_time = MPI_Wtime();
     }*/
 
