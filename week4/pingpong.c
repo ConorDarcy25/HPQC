@@ -47,9 +47,10 @@ void ping_pong(int num_pings, int my_rank) {
     if (my_rank == 0) {
         timespec_get(&start_time, TIME_UTC);
         while (counter < num_pings) {
-            printf("Rank 0: Sending counter value %d to Rank 1\n", counter);
             MPI_Send(&counter, 1, MPI_INT, 1, tag, MPI_COMM_WORLD);
             MPI_Recv(&counter, 1, MPI_INT, 1, tag, MPI_COMM_WORLD, &status);
+            // Moved printf to after communication to avoid blocking issues
+            printf("Rank 0: Sent counter value %d to Rank 1\n", counter);
             printf("Rank 0: Received counter value %d from Rank 1\n", counter);
             counter++;
         }
@@ -60,10 +61,11 @@ void ping_pong(int num_pings, int my_rank) {
     } else {
         while (counter < num_pings) {
             MPI_Recv(&counter, 1, MPI_INT, 0, tag, MPI_COMM_WORLD, &status);
-            printf("Rank 1: Received counter value %d from Rank 0\n", counter);
-            counter++;
             MPI_Send(&counter, 1, MPI_INT, 0, tag, MPI_COMM_WORLD);
+            // Moved printf to after communication to avoid blocking issues
+            printf("Rank 1: Received counter value %d from Rank 0\n", counter);
             printf("Rank 1: Sent counter value %d to Rank 0\n", counter);
+            counter++;
         }
     }
 }
