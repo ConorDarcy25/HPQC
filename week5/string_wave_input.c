@@ -66,8 +66,8 @@ int check_args(int argc, char **argv, Args *args) {
     args->points = atoi(argv[1]);
     args->cycles = atoi(argv[2]);
     args->samples = atoi(argv[3]);
-    strncpy(args->output_file, argv[4], 255);
-    args->output_file[255] = '\0';
+    strncpy(args->string_file, argv[4], 255);
+    args->string_file[255] = '\0';
     return 0;
 }
 
