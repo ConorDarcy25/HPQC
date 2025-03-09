@@ -8,3 +8,29 @@ This output is the same for any number of processors, with only the X value chan
 
 *Step 2:*
 Updated code to be easier to read
+
+*Step 3:*
+
+So far it just runs and won't let me type anything else into the command line
+
+# **Part 2**
+
+*Step 1:*
+
+Program created
+
+*Step 2:*
+
+Code initially was hanging after running but managed to get around this using online resources and help from software engineer.
+
+With larger input values, the total time increases in an apparent linear fashion while the average time decreases.
+
+The code lists all the times information was sent and received, as well as from what rank, like in the previous comm_test_mpi.c code
+
+*Step 2:*
+
+Incomplete
+
+# **Part 3**
+
+
