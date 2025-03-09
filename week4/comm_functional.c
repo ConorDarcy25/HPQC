@@ -2,63 +2,70 @@
 #include <mpi.h>
 
 // Function prototypes
-void initialize_mpi(int *argc, char ***argv, int *my_rank, int *uni_size);
-void finalize_mpi();
-void send_message(int my_rank);
-void receive_messages(int my_rank, int uni_size);
-void handle_single_process(int uni_size);
+void main_task(int uni_size, int source, int rank);
+void client_task(int uni_size, int my_rank);
+void run_tasks(int uni_size, int my_rank);
+void check_processors(int uni_size, int my_rank);
 
 int main(int argc, char **argv) 
 {
+    // declare and initialise rank and size variables
     int my_rank, uni_size;
     
-    initialize_mpi(&argc, &argv, &my_rank, &uni_size);
+    // initialize MPI
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &uni_size);
     
-    if (uni_size > 1) {
-        if (my_rank == 0) {
-            receive_messages(my_rank, uni_size);
-        } else {
-            send_message(my_rank);
-        }
-    } else {
-        handle_single_process(uni_size);
-    }
+    // checks the number of processors and runs tasks if valid
+    check_processors(uni_size, my_rank);
     
-    finalize_mpi();
+    // finalize MPI
+    MPI_Finalize();
     return 0;
 }
 
-void initialize_mpi(int *argc, char ***argv, int *my_rank, int *uni_size) {
-    MPI_Init(argc, argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, my_rank);
-    MPI_Comm_size(MPI_COMM_WORLD, uni_size);
-}
-
-void finalize_mpi() {
-    MPI_Finalize();
-}
-
-void send_message(int my_rank) {
-    int send_message = my_rank * 10;
-    int dest = 0;  // Sending to rank 0
-    int count = 1, tag = 0;
-    
-    MPI_Send(&send_message, count, MPI_INT, dest, tag, MPI_COMM_WORLD);
-    printf("Hello, I am %d. Sent %d to Rank %d\n", my_rank, send_message, dest);
-}
-
-void receive_messages(int my_rank, int uni_size) {
-    int recv_message, source;
-    int count = 1, tag = 0;
+void main_task(int uni_size, int source, int rank)
+{
+    int recv_message, count = 1, tag = 0;
     MPI_Status status;
     
-    for (int their_rank = 1; their_rank < uni_size; their_rank++) {
-        source = their_rank;
-        MPI_Recv(&recv_message, count, MPI_INT, source, tag, MPI_COMM_WORLD, &status);
-        printf("Hello, I am %d. Received %d from Rank %d\n", my_rank, recv_message, source);
+    // receives the message
+    MPI_Recv(&recv_message, count, MPI_INT, source, tag, MPI_COMM_WORLD, &status);
+    
+    // prints the message from the sender
+    printf("Hello, I am %d of %d. Received %d from Rank %d\n", rank, uni_size, recv_message, source);
+}
+
+void client_task(int uni_size, int my_rank)
+{
+    int send_message = my_rank * 10;
+    int dest = 0, count = 1, tag = 0;
+    
+    // sends the message
+    MPI_Send(&send_message, count, MPI_INT, dest, tag, MPI_COMM_WORLD);
+    
+    // prints the message from the sender
+    printf("Hello, I am %d of %d. Sent %d to Rank %d\n", my_rank, uni_size, send_message, dest);
+}
+
+void run_tasks(int uni_size, int my_rank)
+{
+    if (my_rank == 0) {
+        for (int their_rank = 1; their_rank < uni_size; their_rank++) {
+            main_task(uni_size, their_rank, my_rank);
+        }
+    } else {
+        client_task(uni_size, my_rank);
     }
 }
 
-void handle_single_process(int uni_size) {
-    printf("Unable to communicate with less than 2 processes. MPI communicator size = %d\n", uni_size);
+void check_processors(int uni_size, int my_rank)
+{
+    if (uni_size > 1) {
+        run_tasks(uni_size, my_rank);
+    } else {
+        // prints a warning
+        printf("Unable to communicate with less than 2 processes. MPI communicator size = %d\n", uni_size);
+    }
 }
