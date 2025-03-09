@@ -35,9 +35,9 @@ int main(int argc, char **argv) {
     initialise_vector(positions, args.points, 0.0);
 
     // Open file for writing
-    FILE* out_file = fopen(args.output_file, "w");
+    FILE* out_file = fopen(args.string_file, "w");
     if (!out_file) {
-        fprintf(stderr, "ERROR: Unable to open file %s for writing.\n", args.output_file);
+        fprintf(stderr, "ERROR: Unable to open file %s for writing.\n", args.string_file);
         exit(EXIT_FAILURE);
     }
     print_header(&out_file, args.points);
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 int check_args(int argc, char **argv, Args *args) {
     if (argc != 5) {
-        fprintf(stderr, "Usage: %s points cycles samples output_file\n", argv[0]);
+        fprintf(stderr, "Usage: %s points cycles samples string_file\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
