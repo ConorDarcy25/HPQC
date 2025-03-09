@@ -8,7 +8,7 @@ typedef struct {
     int points;
     int cycles;
     int samples;
-    char output_file[256];
+    char string_file[256];
 } Args;
 
 int check_args(int argc, char **argv, Args *args);
