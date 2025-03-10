@@ -69,11 +69,11 @@ def extract_position(data, i=0, other=2):
 
 def get_file_name():
     if len(sys.argv) < 2:
-        print("Oops! You forgot to add a filename. Try again!")
+        print("Give file name")
         exit(1)
     filename = sys.argv[1]
     if ".csv" not in filename:
-        print("Umm... are you sure that's a CSV file?")
+        print("Make suer the file is a csv")
         exit(1)
     return filename
 
@@ -87,7 +87,7 @@ def main():
         try:
             fps = int(sys.argv[3])
         except ValueError:
-            print("Hey! FPS should be a number!")
+            print("Requires number argument")
             exit(1)
     else:
         fps = 25
@@ -99,7 +99,7 @@ def main():
     ani = animation.FuncAnimation(fig, animate, num_times, interval=interval, blit=True, fargs=(data, rope))
     output_file = generate_path(basename=output_basename, extension='gif')
     ani.save(filename=output_file, writer="pillow", fps=fps)
-    print("Yay! Your animation is saved as", output_file)
+    
 
 if __name__ == "__main__":
     main()
