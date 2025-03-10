@@ -73,7 +73,7 @@ def get_file_name():
         exit(1)
     filename = sys.argv[1]
     if ".csv" not in filename:
-        print("Make suer the file is a csv")
+        print("Make sure the file is a csv")
         exit(1)
     return filename
 
