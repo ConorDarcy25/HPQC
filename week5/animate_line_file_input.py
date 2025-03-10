@@ -1,14 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import matplotlib
-matplotlib.use('Agg')
 
 import pandas as pd
 import sys
 import os
 
-def generate_path(home_folder=os.path.expanduser("~"), subfolder='data', basename='animate_string_file', extension='gif'):
+def generate_path(home_folder=os.path.expanduser("~"), subfolder='data', basename='animate_line', extension='gif'):
     """Creates file path for storing output."""
     output_folder = os.path.join(home_folder, subfolder)
     filename = basename + '.' + extension
@@ -49,7 +47,7 @@ def configure_rope(length=50, step_size=1, start=0):
 def configure_plot(x_positions, y_positions):
     """Sets up the plot."""
     fig, ax1 = plt.subplots()
-    fig.suptitle('Simulation of Vibrations in a String')
+    fig.suptitle('String Vibration Simulation')
     ax1.set_ylim(-1.1, 1.1)
     rope, = ax1.plot(x_positions, y_positions, "o", markersize=5, color="green")
     return fig, rope
