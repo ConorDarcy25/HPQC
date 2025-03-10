@@ -1,14 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
 import pandas as pd
-import sys
 import os
 
 def generate_path(home_folder=os.path.expanduser("~"), subfolder='data', basename='animate_line', extension='gif'):
     """Creates file path for storing output."""
     output_folder = os.path.join(home_folder, subfolder)
+    os.makedirs(output_folder, exist_ok=True)  # Ensure the folder exists
     filename = basename + '.' + extension
     output_path = os.path.join(output_folder, filename)
     return output_path
@@ -52,14 +51,12 @@ def configure_plot(x_positions, y_positions):
     rope, = ax1.plot(x_positions, y_positions, "o", markersize=5, color="green")
     return fig, rope
 
-def get_data(filename):
+def get_data(filename="animate_line.csv"):
     """Reads data from a CSV file."""
-    try:
-        data = pd.read_csv(filename)
-    except FileNotFoundError:
+    if not os.path.exists(filename):
         print(f"File not found: {filename}")
         exit(1)
-    return data, len(data.columns) - 2, len(data)
+    return pd.read_csv(filename), len(pd.read_csv(filename).columns) - 2, len(pd.read_csv(filename))
 
 def extract_position(data, i=0):
     """Extracts positions from a data frame."""
@@ -68,20 +65,9 @@ def extract_position(data, i=0):
     x_positions = np.arange(len(y_positions))
     return x_positions, y_positions
 
-def get_file_name():
-    """Gets the filename from command-line arguments."""
-    if len(sys.argv) < 2:
-        print("Usage: python script.py [FILENAME].csv")
-        exit(1)
-    filename = sys.argv[1]
-    if not filename.endswith(".csv"):
-        print("Error: File must be a CSV.")
-        exit(1)
-    return filename
-
 def main():
     """Main function."""
-    filename = get_file_name()
+    filename = "animate_line.csv"
     data, num_positions, num_times = get_data(filename)
     times, interval, fps = configure_animation(frame_count=num_times)
     x_positions, y_positions = extract_position(data)
