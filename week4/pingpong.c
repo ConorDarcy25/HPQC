@@ -3,73 +3,108 @@
 #include <mpi.h>
 #include <time.h>
 
-void ping_pong(int num_pings, int my_rank);
-double to_seconds(struct timespec start, struct timespec end);
+int main_task(int uni_size, int source, int rank, int counter, int num_pings);
+void client_task(int uni_size, int my_rank, int num_pings);
+void run_tasks(int uni_size, int my_rank, int num_pings, int counter);
+void check_processors(int uni_size, int my_rank, int num_pings, int counter);
+double convert_to_seconds(struct timespec start, struct timespec end);
+int validate_args(int argc, char **argv);
 
 int main(int argc, char **argv) 
 {
-    int my_rank, uni_size, num_pings;
+    int ierror = 0;
+    int my_rank, uni_size, counter = 0;
     
-    if (argc != 2) {
-        printf("Error: Expected usage: %s <num_pings>\n", argv[0]);
-        return -1;
-    }
-    num_pings = atoi(argv[1]);
-    if (num_pings <= 0) {
-        printf("Error: num_pings must be greater than zero\n");
-        return -1;
-    }
+    int num_pings = validate_args(argc, argv);
     
-    MPI_Init(&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &uni_size);
+    ierror = MPI_Init(&argc, &argv);
+    ierror = MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+    ierror = MPI_Comm_size(MPI_COMM_WORLD, &uni_size);
     
-    if (uni_size != 2) {
-        if (my_rank == 0) {
-            printf("This program needs exactly 2 processes to work, but got %d\n", uni_size);
-        }
-        MPI_Finalize();
-        return -1;
-    }
+    check_processors(uni_size, my_rank, num_pings, counter);
     
-    ping_pong(num_pings, my_rank);
-    
-    MPI_Finalize();
+    ierror = MPI_Finalize();
     return 0;
 }
 
-void ping_pong(int num_pings, int my_rank) {
-    int counter = 0;
-    int tag = 0;
+int main_task(int uni_size, int source, int rank, int counter, int num_pings)
+{
+    int recv_message = 0, send_message = counter, count = 1, tag = 0;
     MPI_Status status;
     struct timespec start_time, end_time;
+    timespec_get(&start_time, TIME_UTC);
+
+    if (send_message <= num_pings) {
+        MPI_Send(&send_message, count, MPI_INT, 1, tag, MPI_COMM_WORLD);
+        MPI_Recv(&recv_message, count, MPI_INT, source, tag, MPI_COMM_WORLD, &status);
+    }
+    timespec_get(&end_time, TIME_UTC);
     
+    double runtime = convert_to_seconds(start_time, end_time);
+    return recv_message;
+}
+
+void client_task(int uni_size, int my_rank, int num_pings)
+{
+    int send_message = 0, recv_message = 0, count = 1, tag = 0;
+    MPI_Status status;
+    struct timespec start_time, end_time;
+    timespec_get(&start_time, TIME_UTC);
+    
+    MPI_Recv(&recv_message, count, MPI_INT, 0, tag, MPI_COMM_WORLD, &status);
+    send_message = recv_message + 1;
+    
+    if (send_message <= num_pings) {
+        MPI_Send(&send_message, count, MPI_INT, 0, tag, MPI_COMM_WORLD);
+    }
+    
+    timespec_get(&end_time, TIME_UTC);
+    convert_to_seconds(start_time, end_time);
+}
+
+void run_tasks(int uni_size, int my_rank, int num_pings, int counter)
+{
+    struct timespec start_time, end_time;
+    timespec_get(&start_time, TIME_UTC);
+
+    while (counter < num_pings) {
+        if (my_rank == 0) {
+            for (int their_rank = 1; their_rank < uni_size; their_rank++) {
+                main_task(uni_size, their_rank, my_rank, counter, num_pings);           
+            }
+        } else {
+            client_task(uni_size, my_rank, num_pings);
+        }
+        counter++;
+    }
+    
+    timespec_get(&end_time, TIME_UTC);
+    double runtime = convert_to_seconds(start_time, end_time);
     if (my_rank == 0) {
-        timespec_get(&start_time, TIME_UTC);
-        while (counter < num_pings) {
-            MPI_Send(&counter, 1, MPI_INT, 1, tag, MPI_COMM_WORLD);
-            MPI_Recv(&counter, 1, MPI_INT, 1, tag, MPI_COMM_WORLD, &status);
-            // Moved printf to after communication to avoid blocking issues
-            printf("Rank 0: Sent counter value %d to Rank 1\n", counter);
-            printf("Rank 0: Received counter value %d from Rank 1\n", counter);
-            counter++;
-        }
-        timespec_get(&end_time, TIME_UTC);
-        double elapsed_time = to_seconds(start_time, end_time);
-        double avg_time = elapsed_time / num_pings;
-        printf("Ping-Pong completed: %d pings, Total time: %lf s, Avg time: %lf s\n", num_pings, elapsed_time, avg_time);
-    } else {
-        while (counter < num_pings) {
-            MPI_Recv(&counter, 1, MPI_INT, 0, tag, MPI_COMM_WORLD, &status);
-            MPI_Send(&counter, 1, MPI_INT, 0, tag, MPI_COMM_WORLD);
-            // Moved printf to after communication to avoid blocking issues
-            printf("Rank 1: Received counter value %d from Rank 0\n", counter);
-            printf("Rank 1: Sent counter value %d to Rank 0\n", counter);
-            counter++;
-        }
+        printf("Total elapsed time: %lf seconds\n", runtime);
     }
 }
 
-double to_seconds(struct timespec start, struct timespec end) {
+void check_processors(int uni_size, int my_rank, int num_pings, int counter)
+{
+    if (uni_size == 2) {
+        run_tasks(uni_size, my_rank, num_pings, counter);
+    } else if (my_rank == 0) {
+        printf("Error: This program requires exactly 2 processors.\n");
+    }
+}
+
+double convert_to_seconds(struct timespec start, struct timespec end)
+{
     return (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+}
+
+int validate_args(int argc, char **argv)
+{
+    if (argc == 2) {
+        return atoi(argv[1]);
+    } else {
+        fprintf(stderr, "Usage: %s [NUMBER]\n", argv[0]);
+        exit(-1);
+    }
 }
