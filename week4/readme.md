@@ -30,7 +30,7 @@ With larger input values, the total time increases in an apparent linear fashion
 
 The code lists all the times information was sent and received, as well as from what rank, like in the previous comm_test_mpi.c code
 
-*Step 2:*
+*Step 3:*
 
 Incomplete
 
