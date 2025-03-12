@@ -7,15 +7,17 @@ int main_task(int uni_size, int source, int rank, int counter, int num_pings);
 void client_task(int uni_size, int my_rank, int num_pings);
 void run_tasks(int uni_size, int my_rank, int num_pings, int counter);
 void check_processors(int uni_size, int my_rank, int num_pings, int counter);
-double convert_to_seconds(struct timespec start, struct timespec end);
-int validate_args(int argc, char **argv);
+double to_second_float(struct timespec in_time);
+struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time);
+int check_args(int argc, char **argv);
 
 int main(int argc, char **argv) 
 {
     int ierror = 0;
-    int my_rank, uni_size, counter = 0;
+    int my_rank, uni_size, counter;
+    my_rank = uni_size = counter = 0;
     
-    int num_pings = validate_args(argc, argv);
+    int num_pings = check_args(argc, argv);
     
     ierror = MPI_Init(&argc, &argv);
     ierror = MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
@@ -29,26 +31,37 @@ int main(int argc, char **argv)
 
 int main_task(int uni_size, int source, int rank, int counter, int num_pings)
 {
-    int recv_message = 0, send_message = counter, count = 1, tag = 0;
+    int recv_message, send_message, count, tag;
+    recv_message = tag = 0;
+    send_message = counter;
+    count = 1;
     MPI_Status status;
-    struct timespec start_time, end_time;
+    
+    struct timespec start_time, end_time, time_diff;
+    double runtime = 0.0;
     timespec_get(&start_time, TIME_UTC);
-
+    
     if (send_message <= num_pings) {
         MPI_Send(&send_message, count, MPI_INT, 1, tag, MPI_COMM_WORLD);
         MPI_Recv(&recv_message, count, MPI_INT, source, tag, MPI_COMM_WORLD, &status);
     }
     timespec_get(&end_time, TIME_UTC);
     
-    double runtime = convert_to_seconds(start_time, end_time);
+    time_diff = calculate_runtime(start_time, end_time);
+    runtime = to_second_float(time_diff);
+    
     return recv_message;
 }
 
 void client_task(int uni_size, int my_rank, int num_pings)
 {
-    int send_message = 0, recv_message = 0, count = 1, tag = 0;
+    int send_message, recv_message, count, dest, tag;
+    send_message = recv_message = dest = tag = 0;
+    count = 1;
     MPI_Status status;
-    struct timespec start_time, end_time;
+    
+    struct timespec start_time, end_time, time_diff;
+    double runtime = 0.0;
     timespec_get(&start_time, TIME_UTC);
     
     MPI_Recv(&recv_message, count, MPI_INT, 0, tag, MPI_COMM_WORLD, &status);
@@ -57,14 +70,15 @@ void client_task(int uni_size, int my_rank, int num_pings)
     if (send_message <= num_pings) {
         MPI_Send(&send_message, count, MPI_INT, 0, tag, MPI_COMM_WORLD);
     }
-    
     timespec_get(&end_time, TIME_UTC);
-    convert_to_seconds(start_time, end_time);
+    time_diff = calculate_runtime(start_time, end_time);
+    runtime = to_second_float(time_diff);
 }
 
 void run_tasks(int uni_size, int my_rank, int num_pings, int counter)
 {
-    struct timespec start_time, end_time;
+    struct timespec start_time, end_time, time_diff;
+    double runtime = 0.0;
     timespec_get(&start_time, TIME_UTC);
 
     while (counter < num_pings) {
@@ -79,7 +93,8 @@ void run_tasks(int uni_size, int my_rank, int num_pings, int counter)
     }
     
     timespec_get(&end_time, TIME_UTC);
-    double runtime = convert_to_seconds(start_time, end_time);
+    time_diff = calculate_runtime(start_time, end_time);
+    runtime = to_second_float(time_diff);
     if (my_rank == 0) {
         printf("Total elapsed time: %lf seconds\n", runtime);
     }
@@ -94,12 +109,29 @@ void check_processors(int uni_size, int my_rank, int num_pings, int counter)
     }
 }
 
-double convert_to_seconds(struct timespec start, struct timespec end)
+double to_second_float(struct timespec in_time)
 {
-    return (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    return in_time.tv_sec + in_time.tv_nsec / 1e9;
 }
 
-int validate_args(int argc, char **argv)
+struct timespec calculate_runtime(struct timespec start_time, struct timespec end_time)
+{
+    struct timespec time_diff;
+    long int seconds, nanoseconds;
+    seconds = end_time.tv_sec - start_time.tv_sec;
+    nanoseconds = end_time.tv_nsec - start_time.tv_nsec;
+
+    if (nanoseconds < 0) {
+        seconds -= 1;
+        nanoseconds += (long int)1e9;
+    }
+    
+    time_diff.tv_sec = seconds;
+    time_diff.tv_nsec = nanoseconds;
+    return time_diff;
+}
+
+int check_args(int argc, char **argv)
 {
     if (argc == 2) {
         return atoi(argv[1]);
