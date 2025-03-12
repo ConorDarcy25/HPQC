@@ -32,7 +32,11 @@ The code lists all the times information was sent and received, as well as from 
 
 *Step 3:*
 
-Incomplete
+pingponga.c was created. This file takes two arguments in the command line. These arguments are the number of pings and the size of the array. This file only works with exaclty two processors to ensure it acts like "ping-pong". The root rank calls the main task to send an array to the receiving rank. The receiving rank modifes the array and returns it until the input number of pings value is reached
+
+The main_task() function allocates the integer array of the same size of the input value for the size of the array
+
+The graph part is incomplete
 
 # **Part 3**
 
