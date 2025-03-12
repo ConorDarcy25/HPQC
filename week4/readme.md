@@ -13,6 +13,9 @@ Updated code to be easier to read
 
 So far it just runs and won't let me type anything else into the command line
 
+*Step 4:*
+
+
 # **Part 2**
 
 *Step 1:*
