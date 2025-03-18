@@ -30,14 +30,10 @@ int main(int argc, char **argv) {
     
     n = atoi(argv[1]);
     int *vector = (int*)malloc(n * sizeof(int));
-    int *extra_vector = (int*)malloc(n * sizeof(int));
     
     if (rank == 0) {
         initialise_vector(vector, n, 0);
         non_trivial_vector(vector, n);
-        for (int i = 0; i < n; i++) {
-            extra_vector[i] = vector[i]; // Extra copy in case needed
-        }
     }
     
     timespec_get(&start_time, TIME_UTC);
@@ -61,7 +57,6 @@ int main(int argc, char **argv) {
     }
     
     free(vector);
-    free(extra_vector);
     
     MPI_Finalize();
     return 0;
