@@ -11,10 +11,11 @@ Updated code to be easier to read
 
 *Step 3:*
 
-So far it just runs and won't let me type anything else into the command line
+Initally the code was hanging but I got it fixed. Send/Recv is better for simple message passing, while Scatter/Reduce is useful for real workloads as automatically balances workload and is fast.
 
 *Step 4:*
 
+Using 4 processors and a vector of 12, it took 0.413 seconds in real time.
 
 # **Part 2**
 
