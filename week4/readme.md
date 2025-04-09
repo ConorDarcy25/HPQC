@@ -40,4 +40,8 @@ The graph part is incomplete
 
 # **Part 3**
 
+*Step 1:*
 
+Prediction: MPI_Scatter will be the fastest as it only sends the necessary data.
+
+Broadcast.c: initalises MPI and allocates vectors, as always. A non_trivial_vector is used so that summing the vector is meaningful. The root task has MPI_Bcast, which broadcasts the whole vector to all processes and waits for each client to send back a single integer. It then adds all received sums into a total and prints it.
