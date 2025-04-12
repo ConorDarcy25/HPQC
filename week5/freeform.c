@@ -3,6 +3,7 @@
 #include <math.h>
 #include <mpi.h>
 
+
 int check_args(int argc, char **argv);
 void initialise_vector(double vector[], int size, double initial);
 void print_vector(double vector[], int size);
