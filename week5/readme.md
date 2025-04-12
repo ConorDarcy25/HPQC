@@ -16,7 +16,7 @@ Python code part is incomplete
 
 *Step 1:*
 
-THe time_Steps function can be parallelised. Even though each time update depends on the previoius time step value, the loop can be parallelised to calculate different points in space while maintaining communication between segments
+The time_Steps function can be parallelised. Even though each time update depends on the previoius time step value, the loop can be parallelised to calculate different points in space while maintaining communication between segments
 
 The string position calculation can be updated to be parallelised too by creating an array for each section of the string. Neighnouring chunks must still keep communication for boundary data.
 
