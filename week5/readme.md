@@ -26,6 +26,6 @@ MPI_Send and MPI_Recv will be used to exchange boundary data between two segment
 
 *Step 2:*
 
-Each process will write it's output data to it's own assignmed file
+Each process will write it's output data to it's own assigned file
 
 The root process will then gather all the output files and write them to a single csv file
