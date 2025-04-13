@@ -11,6 +11,14 @@ H_gate = np.array([[1, 1], [1, -1]]) * np.sqrt(0.5)  # Hadamard gate
 # Stack to keep track of qubit names
 namestack = []
 
+TOFF_gate = np.array([[1, 0, 0, 0, 0, 0, 0, 0], # Toffoli gate
+                     [0, 1, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 1, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 1, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 1, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 1, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 1],
+                     [0, 0, 0, 0, 0, 0, 1, 0]])
 # Function to push a qubit onto the stack with given weights
 def pushQubit(name, weights):
     global workspace, namestack
